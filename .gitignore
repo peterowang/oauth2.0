@@ -1,0 +1,41 @@
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+*.sw?
+.#*
+*#
+*~
+*.sublime-*
+
+# Build Artifacts
+.gradle/
+build/
+target/
+bin/
+out
+dependency-reduced-pom.xml
+
+# Eclipse Project Files
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA Files
+*.iml
+*.ipr
+*.iws
+*.idea
+
+#Log
+.project
+/log
+/LOG_*
+.base_IS_UNDEFINED
+/test-output/
+
+#NodeJS
+node_modules
+/logs
+README.html
+/cache/

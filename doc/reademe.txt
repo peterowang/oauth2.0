@@ -1,0 +1,102 @@
+ maven:
+
+ 需要手动 mvn 两个包
+
+
+
+
+
+
+
+   <!-- 定义跳转的文件的前后缀 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个
+              可用的url地址 -->
+        <property name="prefix" value="/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <!-- 以下3项参数与log4j的配置相关 -->
+
+        <context-param>
+            <param-name>log4jConfigLocation</param-name>
+            <param-value>/WEB-INF/log4j.properties</param-value>
+        </context-param>
+
+        <context-param>
+            <param-name>log4jRefreshInterval</param-name>
+            <param-value>60000</param-value>
+        </context-param>
+        <listener>
+            <listener-class>
+                org.springframework.web.util.Log4jConfigListener
+            </listener-class>
+        </listener>
+    <!-- end -->
+
+        <listener>
+            <listener-class>
+                org.springframework.web.context.ContextLoaderListener
+            </listener-class>
+        </listener>
+
+
+    <!-- 数据源配置 -->
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+            <property name="driverClass">
+                <value>${jdbc.driverClassName}</value>
+            </property>
+            <property name="jdbcUrl">
+                <value>${jdbc.url}</value>
+            </property>
+            <property name="user">
+                <value>${jdbc.username}</value>
+            </property>
+            <property name="password">
+                <value>${jdbc.password}</value>
+            </property>
+            <property name="acquireIncrement">
+                <value>${c3p0.acquireIncrement}</value>
+            </property>
+            <property name="initialPoolSize">
+                <value>${c3p0.initialPoolSize}</value>
+            </property>
+            <property name="minPoolSize">
+                <value>${c3p0.minPoolSize}</value>
+            </property>
+            <property name="maxPoolSize">
+                <value>${c3p0.maxPoolSize}</value>
+            </property>
+            <property name="maxIdleTime">
+                <value>${c3p0.maxIdleTime}</value>
+            </property>
+            <property name="idleConnectionTestPeriod">
+                <value>${c3p0.idleConnectionTestPeriod}</value>
+            </property>
+            <property name="maxStatements">
+                <value>${c3p0.maxStatements}</value>
+            </property>
+            <property name="numHelperThreads">
+                <value>${c3p0.numHelperThreads}</value>
+            </property>
+        </bean>
+
+
+
+        <!-- 配置那些类的方法进行事务管理 -->
+            <aop:config>
+                <aop:pointcut id="executeService" expression="execution(* com.lavasoft.*.service..*(..))"/>
+                <aop:advisor pointcut-ref="executeService" advice-ref="txAdvice"/>
+            </aop:config>
+            <tx:advice id="txAdvice" transaction-manager="transactionManager">
+                <tx:attributes>
+                    <tx:method name="select*" read-only="true"/>
+                    <tx:method name="get*" read-only="true"/>
+                    <tx:method name="load*" read-only="true"/>
+                    <tx:method name="find*" read-only="true"/>
+                    <tx:method name="query*" read-only="true"/>
+                    <tx:method name="read*" read-only="true"/>
+                    <tx:method name="sync*"/>
+                    <tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+                </tx:attributes>
+            </tx:advice>
